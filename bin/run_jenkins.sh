@@ -2,4 +2,12 @@
 BIN="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT="$(dirname "${BIN}")"
 
-docker run -d -p 8080:8080 -p 50000:50000 -v "${ROOT}/data/jenkins:/var/jenkins_home" --name jenkins jenkins:2.19.1-alpine
+docker service create \
+	--network frontend \
+	--endpoint-mode vip \
+	--publish 8080:8080 \
+	--publish 50000:50000 \
+	--mount "type=bind,source=${ROOT}/data/jenkins,target=/var/jenkins_home" \
+	--replicas 1 \
+	--name jenkins \
+	jenkins:2.19.1-alpine
