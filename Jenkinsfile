@@ -12,7 +12,8 @@ node('build') {
     stage('Push to DockerHub') {
       withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
         sh("sudo docker login -u '${USERNAME}' -p '${PASSWORD}'")
-        sh("sudo docker push thetaiter/webapp-example:0.1-b${BUILD_NUMBER} thetaiter/webapp-example:latest")
+        sh("sudo docker push ${USERNAME}/webapp-example:0.1-b${BUILD_NUMBER}")
+        sh("sudo docker push ${USERNAME}/webapp-example:latest")
         sh('sudo docker logout')
       }
     }
