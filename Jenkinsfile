@@ -18,7 +18,7 @@ def sendSlackMessage(message, color) {
 }
 
 timestamps {
-  slackSendMessage("Build ${BUILD_NUMBER} has started", 'blue')
+  sendSlackMessage("Build ${BUILD_NUMBER} has started", 'blue')
 
   figlet "Awesome..."
   
@@ -50,5 +50,5 @@ timestamps {
 
   figlet "Done!"
 
-  slackSendMessage("Build ${BUILD_NUMBER} has finished with result: " + manager.build.result, 'blue')
+  sendSlackMessage("Build ${BUILD_NUMBER} has finished with result: " + manager.build.result, 'blue')
 }
