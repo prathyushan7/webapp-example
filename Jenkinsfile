@@ -38,10 +38,10 @@ timestamps {
     
       stage('Push to DockerHub') {
         try {
-//          docker.withRegistry("https://hub.docker.com/", 'docker') {
+          docker.withRegistry("https://docker.io/", 'docker') {
             myImage.push("0.1-b${BUILD_NUMBER}")
             myImage.push('latest')
-//          }
+          }
         } catch(any) {
           sendErrorMessage('Push to DockerHub')
           throw any
