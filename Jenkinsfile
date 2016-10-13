@@ -29,7 +29,8 @@ timestamps {
       def myImage = ""
       stage('Build Docker Image') {
         try {
-          myImage = docker.build("thetaiter/webapp-example")
+          myImage = docker.build("thetaiter/webapp-example:0.1-b${BUILD_NUMBER}")
+          myImage.tag('latest')
         } catch(any) {
           sendErrorMessage('Build Docker Image')
           throw any
@@ -38,9 +39,8 @@ timestamps {
     
       stage('Push to DockerHub') {
         try {
-          docker.withRegistry("https://docker.io/", 'docker') {
-            myImage.push("0.1-b${BUILD_NUMBER}")
-            myImage.push('latest')
+          docker.withRegistry("https://hub.docker.com/", 'docker') {
+            myImage.push()
           }
         } catch(any) {
           sendErrorMessage('Push to DockerHub')
