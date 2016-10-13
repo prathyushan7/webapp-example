@@ -1,3 +1,11 @@
+env.buildCauseDescription="${currentBuild.rawBuild.getCauses()[0].getShortDescription()}"
+
+if ("${env.buildCauseDescription}" == "Branch indexing") {
+  env.buildCauseDescription = "started by ${env.buildCauseDescription.replace('B','b')}"
+} else {
+  env.buildCauseDescription = "${env.buildCauseDescription.replace('S','s')}"
+}
+
 timestamps {
   slackSend message: "Jenkins job '${env.JOB_NAME}' has been ${env.buildCauseDescription}.\n\nPlease check the console output to monitor the job:\n${env.BUILD_URL}console",
             color: 'good'
