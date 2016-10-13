@@ -1,5 +1,10 @@
 env.buildCauseDescription="${currentBuild.rawBuild.getCauses()[0].getShortDescription()}"
 
+def sendErrorMessage(stage) {
+  slackSend message: "There was an error in stage '${stage}' in Jenkins job '${env.JOB_NAME}'.\n\nPlease check the console output to find out more:\n${env.BUILD_URL}console",
+            color: 'danger'
+}
+
 if ("${env.buildCauseDescription}" == "Branch indexing") {
   env.buildCauseDescription = "started by ${env.buildCauseDescription.replace('B','b')}"
 } else {
@@ -16,37 +21,29 @@ timestamps {
         try {
           checkout scm
         } catch(any) {
-          slackSend message: "There was an error in stage 'Pull Source' in Jenkins job '${env.JOB_NAME}'.\n\nPlease check the console output to find out more:\n${env.BUILD_URL}console",
-                    color: 'danger'
-
+          sendErrorMessage('Pull Source')
           throw any
         }
       }
   
+      def myImage = new docker.Image()
       stage('Build Docker Image') {
         try {
-          sh("sudo docker build -t thetaiter/webapp-example:0.1-b${BUILD_NUMBER} .")
-          sh("sudo docker tag thetaiter/webapp-example:0.1-b${BUILD_NUMBER} thetaiter/webapp-example:latest")
+          myImage = docker.build("thetaiter/webapp-example")
         } catch(any) {
-          slackSend message: "There was an error in stage 'Build Docker Image' in Jenkins job '${env.JOB_NAME}'.\n\nPlease check the console output to find out more:\n${env.BUILD_URL}console",
-                    color: 'danger'
-
+          sendErrorMessage('Build Docker Image')
           throw any
         }
       }
     
       stage('Push to DockerHub') {
         try {
-          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-            sh("sudo docker login -u '${USERNAME}' -p '${PASSWORD}'")
-            sh("sudo docker push ${USERNAME}/webapp-example:0.1-b${BUILD_NUMBER}")
-            sh("sudo docker push ${USERNAME}/webapp-example:latest")
-            sh('sudo docker logout')
+          docker.withRegistry("https://https://hub.docker.com/", 'docker') {
+            myImage.push("0.1-b${BUILD_NUMBER}")
+            myImage.push('latest')
           }
         } catch(any) {
-          slackSend message: "There was an error in stage 'Push to DockerHub' in Jenkins job '${env.JOB_NAME}'.\n\nPlease check the console output to find out more:\n${env.BUILD_URL}console",
-                    color: 'danger'
-        
+          sendErrorMessage('Push to DockerHub')
           throw any
         } 
       }
@@ -55,9 +52,7 @@ timestamps {
         try {
           sh("sudo docker rmi thetaiter/webapp-example:latest thetaiter/webapp-example:0.1-b${BUILD_NUMBER}")
         } catch(any) {
-          slackSend message: "There was an error in stage 'Cleanup Docker Images' in Jenkins job '${env.JOB_NAME}'.\n\nPlease check the console output to find out more:\n${env.BUILD_URL}console",
-                    color: 'danger'
-        
+          sendErrorMessage('Cleanup Docker Images')
           throw any
         } 
       }
