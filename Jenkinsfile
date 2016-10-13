@@ -1,5 +1,9 @@
 node('build') {
   ws('/home/thetaiter/git/webapp-example/data/jenkins/ws/master') {
+    stage('Pull Source') {
+      checkout scm
+    }
+
     stage('Build Webapp Docker Image') {
       shell("docker build -t thetaiter/webapp-example:0.1-b${BUILD_NUMBER}")
       shell("docker tag thetaiter/webapp-example:0.1-b${BUILD_NUMBER} thetaiter/webapp-example:latest")
