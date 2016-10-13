@@ -1,54 +1,61 @@
-def sendSlackMessage(message, color) {
-  def red = "#FF0000"
-  def green = "#00FF00"
-  def blue = "#0000FF"
-  def c = color
-
-  if ("${c}" == "red") {
-    c = red
-  } else if ("${c}" == "green") {
-    c = green
-  } else if ("${c}" == "blue") {
-    c = blue
-  }
-
-  slackSend message: "${message}",
-          channel: '#builds',
-          color: "${color}"
-}
-
 timestamps {
-  sendSlackMessage("Build ${BUILD_NUMBER} has started", 'blue')
+  slackSend message: "Jenkins job '${env.JOB_NAME}' has been ${env.buildCauseDescription}.\n\nPlease check the console output to monitor the job:\n${env.BUILD_URL}console",
+            color: 'good'
 
-  figlet "Awesome..."
-  
   node('build') {
     ws('/home/thetaiter/git/webapp-example/data/jenkins/ws/master') {
       stage('Pull Source') {
-        checkout scm
+        try {
+          checkout scm
+        } catch(any) {
+          slackSend message: "There was an error in stage 'Pull Source' in Jenkins job '${env.JOB_NAME}'.\n\nPlease check the console output to find out more:\n${env.BUILD_URL}console",
+                    color: 'danger'
+
+          throw any
+        }
       }
   
-      stage('Build Webapp Docker Image') {
-        sh("sudo docker build -t thetaiter/webapp-example:0.1-b${BUILD_NUMBER} .")
-        sh("sudo docker tag thetaiter/webapp-example:0.1-b${BUILD_NUMBER} thetaiter/webapp-example:latest")
-      }
-    
-      stage('Push to DockerHub') {
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-          sh("sudo docker login -u '${USERNAME}' -p '${PASSWORD}'")
-          sh("sudo docker push ${USERNAME}/webapp-example:0.1-b${BUILD_NUMBER}")
-          sh("sudo docker push ${USERNAME}/webapp-example:latest")
-          sh('sudo docker logout')
+      stage('Build Docker Image') {
+        try {
+          sh("sudo docker build -t thetaiter/webapp-example:0.1-b${BUILD_NUMBER} .")
+          sh("sudo docker tag thetaiter/webapp-example:0.1-b${BUILD_NUMBER} thetaiter/webapp-example:latest")
+        } catch(any) {
+          slackSend message: "There was an error in stage 'Build Docker Image' in Jenkins job '${env.JOB_NAME}'.\n\nPlease check the console output to find out more:\n${env.BUILD_URL}console",
+                    color: 'danger'
+
+          throw any
         }
       }
     
+      stage('Push to DockerHub') {
+        try {
+          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            sh("sudo docker login -u '${USERNAME}' -p '${PASSWORD}'")
+            sh("sudo docker push ${USERNAME}/webapp-example:0.1-b${BUILD_NUMBER}")
+            sh("sudo docker push ${USERNAME}/webapp-example:latest")
+            sh('sudo docker logout')
+          }
+        } catch(any) {
+          slackSend message: "There was an error in stage 'Push to DockerHub' in Jenkins job '${env.JOB_NAME}'.\n\nPlease check the console output to find out more:\n${env.BUILD_URL}console",
+                    color: 'danger'
+        
+          throw any
+        } 
+      }
+    
       stage('Cleanup Docker Images') {
-        sh("sudo docker rmi thetaiter/webapp-example:latest thetaiter/webapp-example:0.1-b${BUILD_NUMBER}")
+        try {
+          sh("sudo docker rmi thetaiter/webapp-example:latest thetaiter/webapp-example:0.1-b${BUILD_NUMBER}")
+        } catch(any) {
+          slackSend message: "There was an error in stage 'Cleanup Docker Images' in Jenkins job '${env.JOB_NAME}'.\n\nPlease check the console output to find out more:\n${env.BUILD_URL}console",
+                    color: 'danger'
+        
+          throw any
+        } 
       }
     }
   }
 
-  figlet "Done!"
-
-  sendSlackMessage("Build ${BUILD_NUMBER} has finished with result: " + manager.build.result, 'blue')
+  slackSend message: "Jenkins job '${env.JOB_NAME}' has completed successfully.",
+            color: 'good'
 }
