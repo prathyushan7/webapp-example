@@ -17,7 +17,7 @@ app.get('/', function (req, res) {
       return next(err);
     }
 
-    res.send('This page has been viewed ' + counter + ' times. Currently viewing on ' + os.hostname() + '\n');
+    res.send('This page has been viewed ' + counter + ' times.<br>\nCurrently viewing on ' + os.hostname() + '\n');
   });
 });
 
