@@ -54,7 +54,6 @@ timestamps {
       stage('Cleanup Docker Images') {
         try {
           sh("sudo docker rmi thetaiter/webapp-example:latest thetaiter/webapp-example:0.1-b${BUILD_NUMBER}")
-          sh('function hello() { return 1; }; hello;')
         } catch(any) {
           slackSend message: "There was an error in stage 'Cleanup Docker Images' in Jenkins job '${env.JOB_NAME}'.\n\nPlease check the console output to find out more:\n${env.BUILD_URL}console",
                     color: 'danger'
