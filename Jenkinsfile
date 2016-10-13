@@ -5,7 +5,7 @@ node('build') {
     }
 
     stage('Build Webapp Docker Image') {
-      sh("docker build -t thetaiter/webapp-example:0.1-b${BUILD_NUMBER}")
+      sh("docker build -t thetaiter/webapp-example:0.1-b${BUILD_NUMBER} .")
       sh("docker tag thetaiter/webapp-example:0.1-b${BUILD_NUMBER} thetaiter/webapp-example:latest")
     }
   
