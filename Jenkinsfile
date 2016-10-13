@@ -26,7 +26,7 @@ timestamps {
         }
       }
   
-      def myImage = new docker.Image()
+      def myImage = ""
       stage('Build Docker Image') {
         try {
           myImage = docker.build("thetaiter/webapp-example")
