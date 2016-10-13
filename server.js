@@ -17,7 +17,12 @@ app.get('/', function (req, res) {
       return next(err);
     }
 
-    res.send('This page has been viewed ' + counter + ' times.<br>\nCurrently viewing on ' + os.hostname() + '\n');
+    var response = 'This page has been viewed ' + counter + ' times.<br>\n' +
+                   'Currently viewing on ' + os.hostname() + '<br><br>\n\n' +
+                   '<a href="http://ec2-54-244-136-163.us-west-2.compute.amazonaws.com:8082/">Visualizer 1</a><br>\n' +
+                   '<a href="http://ec2-54-244-26-18.us-west-2.compute.amazonaws.com:8082/">Visualizer 2</a><br>\n'
+
+    res.send(response);
   });
 });
 
