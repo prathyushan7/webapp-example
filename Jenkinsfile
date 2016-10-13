@@ -38,7 +38,7 @@ timestamps {
     
       stage('Push to DockerHub') {
         try {
-          docker.withRegistry("https://https://hub.docker.com/", 'docker') {
+          docker.withRegistry("https://hub.docker.com/", 'docker') {
             myImage.push("0.1-b${BUILD_NUMBER}")
             myImage.push('latest')
           }
