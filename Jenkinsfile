@@ -41,7 +41,8 @@ timestamps {
         try {
           withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
             sh("sudo docker login -u ${USERNAME} -p ${PASSWORD}")
-            sh("sudo docker push thetaiter/webapp-example:latest thetaiter/webapp-example:0.1-b${BUILD_NUMBER}")
+            sh("sudo docker push thetaiter/webapp-example:0.1-b${BUILD_NUMBER}")
+            sh("sudo docker push thetaiter/webapp-example:latest")
             sh("sudo docker logout")
           }
         } catch(any) {
