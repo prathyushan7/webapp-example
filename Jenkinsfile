@@ -39,8 +39,10 @@ timestamps {
     
       stage('Push to DockerHub') {
         try {
-          docker.withRegistry("https://hub.docker.com/", 'docker') {
+          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            sh("sudo docker login -u ${USERNAME} -p ${PASSWORD}")
             myImage.push()
+            sh("sudo docker logout")
           }
         } catch(any) {
           sendErrorMessage('Push to DockerHub')
