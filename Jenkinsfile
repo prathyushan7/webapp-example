@@ -39,11 +39,10 @@ timestamps {
     
       stage('Push to DockerHub') {
         try {
-          docker.withRegistry('https://hub.docker.com/r/thetaiter/webapp-example/', 'docker') {
-//            sh("sudo docker login -u ${USERNAME} -p ${PASSWORD}")
-            
-            myImage.push()
-//            sh("sudo docker logout")
+          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            sh("sudo docker login -u ${USERNAME} -p ${PASSWORD}")
+            sh("sudo docker push thetaiter/webapp-example:latest thetaiter/webapp-example:0.1-b${BUILD_NUMBER}")
+            sh("sudo docker logout")
           }
         } catch(any) {
           sendErrorMessage('Push to DockerHub')
