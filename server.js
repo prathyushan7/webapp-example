@@ -10,6 +10,10 @@ var PORT = process.env.PORT || 8081;
 
 var client = redis.createClient('6379', 'redis');
 
+client.on('end', function(err) {
+  process.exit(4);
+});
+
 console.log('Connected to redis sevice at redis:6379');
 
 app.get('/', function (req, res) {
@@ -29,6 +33,14 @@ app.get('/', function (req, res) {
 });
 
 app.get('/health-check', function(req, res) {
+  client.incr('counter', function(err, counter) {
+    if (err) {
+      console.err(err.toString());
+      process.exit(3);
+      return next(err);
+    }
+  }
+
   res.send('healthy');
 });
 
