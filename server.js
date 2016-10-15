@@ -4,6 +4,7 @@ var express = require('express');
 var os = require('os');
 var redis = require('redis');
 var http = require('http');
+var async = require('async');
 var app = express();
 var PORT = process.env.PORT || 8081;
 
