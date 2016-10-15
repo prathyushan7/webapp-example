@@ -86,4 +86,4 @@ async.whilst(function() {
   }
 
   process.exit(1);
-});)
+});
