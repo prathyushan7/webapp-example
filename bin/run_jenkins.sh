@@ -7,7 +7,6 @@ docker service create \
 	--endpoint-mode vip \
 	--mount "type=bind,source=${ROOT}/data/jenkins/home,target=/var/jenkins_home" \
 	--replicas 1 \
-	--restart-max-attempts 3 \
 	--restart-condition any \
 	--restart-delay 5s \
 	--name jenkins \

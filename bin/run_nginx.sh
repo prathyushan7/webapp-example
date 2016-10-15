@@ -10,7 +10,6 @@ docker service create \
         --mount "type=bind,source=${ROOT}/config/nginx/conf.d/,target=/etc/nginx/conf.d/" \
         --mount "type=bind,source=${ROOT}/data/nginx/log/,target=/var/log/nginx/" \
         --replicas 1 \
-        --restart-max-attempts 3 \
         --restart-condition any \
         --restart-delay 5s \
         --name nginx \

@@ -14,7 +14,6 @@ docker service create \
         --network backend \
         --endpoint-mode vip \
         --replicas 3 \
-        --restart-max-attempts 3 \
         --restart-condition any \
         --restart-delay 5s \
         --name webapp \
