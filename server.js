@@ -39,7 +39,7 @@ app.get('/health-check', function(req, res) {
       process.exit(3);
       return next(err);
     }
-  }
+  });
 
   res.send('healthy');
 });
