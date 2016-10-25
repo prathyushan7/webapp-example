@@ -11,5 +11,6 @@ docker service create \
         --restart-condition any \
         --restart-delay 5s \
         --name redis \
+        --constraint engine.labels.role==manager \
         redis:3.0.7-alpine \
         redis-server --appendonly yes

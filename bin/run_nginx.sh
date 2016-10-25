@@ -13,4 +13,5 @@ docker service create \
         --restart-condition any \
         --restart-delay 5s \
         --name nginx \
+        --constraint engine.labels.role==manager \
         nginx:1.11-alpine

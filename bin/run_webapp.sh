@@ -17,4 +17,5 @@ docker service create \
         --restart-condition any \
         --restart-delay 5s \
         --name webapp \
+        --constraint engine.labels.role==worker \
         "${IMAGE}"

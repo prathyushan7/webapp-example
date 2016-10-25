@@ -9,5 +9,6 @@ docker service create \
 	--replicas 1 \
 	--restart-condition any \
 	--restart-delay 5s \
+	--constraint engine.labels.role==manager \
 	--name jenkins \
 	jenkins:2.19.1-alpine
