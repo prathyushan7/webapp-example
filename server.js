@@ -24,8 +24,8 @@ app.get('/', function (req, res) {
 
     var response = 'This page has been viewed ' + counter + ' times.<br>\n' +
                    'Currently viewing on ' + os.hostname() + '<br><br>\n\n' +
-                   '<a href="http://ec2-54-244-136-163.us-west-2.compute.amazonaws.com:8082/">Visualizer 1</a><br>\n' +
-                   '<a href="http://ec2-54-244-26-18.us-west-2.compute.amazonaws.com:8082/">Visualizer 2</a><br>\n';
+                   '<a href="http://ec2-54-186-148-69.us-west-2.compute.amazonaws.com:8082/">Visualizer 1</a><br>\n' +
+                   '<a href="http://ec2-54-244-143-90.us-west-2.compute.amazonaws.com:8082/">Visualizer 2</a><br>\n';
 
     res.send(response);
   });
