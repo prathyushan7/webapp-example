@@ -16,6 +16,10 @@ var options = {
       return new Error('Retry time exhausted');
     }
 
+    if (options.times_connected > 10) {
+      return undefined;
+    }
+
     return Math.max(options.attempt * 100, 3000);
   }
 }
