@@ -11,6 +11,6 @@ docker service create \
 	--restart-condition any \
 	--restart-delay 5s \
 	--constraint engine.labels.role==manager \
-	--env "JAVA_OPTS=-Duser.timezone=America/Central" \
+	--env "JAVA_OPTS=-Duser.timezone=America/Chicago" \
 	--name jenkins \
 	jenkins:2.19.1-alpine
