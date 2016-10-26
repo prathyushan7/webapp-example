@@ -31,7 +31,7 @@ client.on('connect', function(err) {
 });
 
 client.on('error', function(err) {
-  console.error('Error: ' + err);
+  console.error('RedisClientError:\n' + err);
   client.quit();
 });
 
@@ -42,7 +42,7 @@ client.on('end', function(err) {
 app.get('/', function (req, res) {
   client.incr('counter', function(err, counter) {
     if (err) {
-      console.error(err.toString());
+      console.error('IncrementationError:\n' + err);
       return next(err);
     }
 
