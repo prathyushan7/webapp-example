@@ -42,7 +42,7 @@ client.on('end', function(err) {
 app.get('/', function (req, res) {
   client.incr('counter', function(err, counter) {
     if (err) {
-      console.err(err.toString());
+      console.error(err.toString());
       return next(err);
     }
 
