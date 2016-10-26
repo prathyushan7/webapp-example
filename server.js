@@ -39,7 +39,7 @@ client.on('end', function(err) {
   client = redis.createClient('6379', 'redis');
 });
 
-app.get('/', function (req, res) {
+app.get('/', function (req, res, next) {
   client.incr('counter', function(err, counter) {
     if (err) {
       console.error('IncrementationError:\n' + err);
