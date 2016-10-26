@@ -6,13 +6,33 @@ var redis = require('redis');
 var app = express();
 var PORT = process.env.PORT || 8081;
 
-var client = redis.createClient('6379', 'redis');
+var options = {
+  retry_strategy: function(options) {
+    if (options.error.code === 'ECONNREFUSED') {
+      return new Error('The server refused the connection');
+    }
 
-console.log('Connected to redis sevice at redis:6379');
+    if (options.total_retry_time > 1000 * 60 * 60) {
+      return new Error('Retry time exhausted');
+    }
+
+    return Math.max(options.attempt * 100, 3000);
+  }
+}
+
+var client = redis.createClient('6379', 'redis', options);
+
+client.on('connect', function(err) {
+  console.log('Connected to redis sevice at redis:6379');
+});
 
 client.on('error', function(err) {
-  console.error('Error: ' + err)
-  client = redis.createClient('6379', 'redis')
+  console.error('Error: ' + err);
+  client.quit();
+});
+
+client.on('end', function(err) {
+  client = redis.createClient('6379', 'redis');
 });
 
 app.get('/', function (req, res) {
