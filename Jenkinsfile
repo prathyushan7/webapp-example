@@ -16,7 +16,7 @@ timestamps {
             color: 'good'
 
   node('build') {
-    ws('/home/thetaiter/git/webapp-example/data/jenkins/ws/master') {
+    ws('/home/thetaiter/data/git/webapp-example/data/jenkins/ws/${env.JOB_NAME}') {
       stage('Pull Source') {
         try {
           checkout scm
