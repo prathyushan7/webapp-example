@@ -24,26 +24,26 @@ var options = {
   }
 }
 
-var client = redis.createClient('6379', 'redis', options);
-
-client.on('connect', function(err) {
-  console.log('Connected to redis service at redis:6379');
-});
-
-client.on('error', function(err) {
-  console.error('RedisClientError:\n' + err);
-  client.quit();
-});
-
-client.on('end', function(err) {
-  console.log('Redis connection has been closed')
-  client = redis.createClient('6379', 'redis', options);
-});
-
 app.get('/', function (req, res, next) {
+
+  var client = redis.createClient('6379', 'redis', options);
+  
+  client.on('connect', function(err) {
+    console.log('Connected to redis service at redis:6379');
+  });
+  
+  client.on('error', function(err) {
+    console.error('RedisClientError: ' + err);
+  });
+  
+  client.on('end', function(err) {
+    console.log('Redis connection has been closed');
+  });
+
   client.incr('counter', function(err, counter) {
     if (err) {
-      console.error('IncrementationError:\n' + err);
+      console.error('IncrementationError');
+      client.quit();
       return next(err);
     }
 
@@ -53,6 +53,8 @@ app.get('/', function (req, res, next) {
                    '<a href="http://ec2-54-244-143-90.us-west-2.compute.amazonaws.com:8082/">Visualizer 2</a><br>\n';
 
     res.send(response);
+
+    client.quit();
   });
 });
 
