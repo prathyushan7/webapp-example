@@ -27,7 +27,7 @@ var options = {
 var client = redis.createClient('6379', 'redis', options);
 
 client.on('connect', function(err) {
-  console.log('Connected to redis sevice at redis:6379');
+  console.log('Connected to redis service at redis:6379');
 });
 
 client.on('error', function(err) {
