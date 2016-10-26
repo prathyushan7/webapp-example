@@ -36,7 +36,8 @@ client.on('error', function(err) {
 });
 
 client.on('end', function(err) {
-  client = redis.createClient('6379', 'redis');
+  console.log('Redis connection has been closed')
+  process.exit(1);
 });
 
 app.get('/', function (req, res, next) {
